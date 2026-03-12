@@ -20,7 +20,7 @@ int direction=4;
 void resetGameState(int rows, int cols ,int **array){
     int i , j;
 for (i = 0; i < cols; i++) {
-    array[i] = calloc(rows,sizeof(int));
+    array[i] = calloc(rows,sizeof(int)); 
 }
 return;
 }
@@ -85,9 +85,16 @@ int spawnApple(int rows, int cols ,int **array){
      return 0;
 }
 void spawnSnake(int rows, int cols ,int **array,int *snakeCords){
+    //array[cols/2][rows/4]=1;
+    //snakeCords[0]=cols/2;
+    //snakeCords[1]=rows/4;
     array[cols/2][rows/4]=1;
     snakeCords[0]=cols/2;
     snakeCords[1]=rows/4;
+    snakeSize++;
+    array[cols/2][(rows/4)+1]=1;
+    snakeCords[2]=cols/2;
+    snakeCords[3]=(rows/4)+1;
     snakeSize++;
 }
 void appendCords(int rows,int cols,int **array,int *oldSnakeCords,int *newSnakeCords){
@@ -110,11 +117,9 @@ void moveSnake(int rows, int cols ,int **array,int *snakeCords,int xT,int yT){
     int headX = snakeSize*2-1;
     int snakeHeadY = snakeCords[headY];
     int snakeHeadX = snakeCords[headX];
-        snakeCords[headY] = snakeHeadY+yT;
-        snakeCords[headX] = snakeHeadX+xT;
-    int nextX = snakeHeadX;
-    int nextY = snakeHeadY;
-    for(int i=size-3;i>0;i-=2){
+    int nextX = snakeHeadX+xT;
+    int nextY = snakeHeadY+yT;
+    for(int i=size-2;i>=0;i-=2){
         int tempY=snakeCords[i];
         int tempX=snakeCords[i+1];
         snakeCords[i]=nextY;
