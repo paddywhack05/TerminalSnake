@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <string.h>
 #ifdef _WIN32
 #include <ncurses/ncurses.h>
 #include <windows.h>
@@ -89,24 +90,53 @@ void spawnSnake(int rows, int cols ,int **array,int *snakeCords){
     snakeCords[1]=rows/4;
     snakeSize++;
 }
+void appendCords(int rows,int cols,int **array,int *oldSnakeCords,int *newSnakeCords){
+    int size = snakeSize*2;
+    for(int i=0;i<size;i+=2){
+        array[oldSnakeCords[i]][oldSnakeCords[i+1]] = 0;
+    }
+    for(int i=0;i<size;i+=2){
+        array[newSnakeCords[i]][newSnakeCords[i+1]] = 1;
+    }
+    free(oldSnakeCords);
+}
 void moveSnake(int rows, int cols ,int **array,int *snakeCords,int xT,int yT){
-    
+    printw("Moving snake");
+    int *oldCords = malloc(sizeof(int)*rows*cols*2);
+    memcpy(oldCords,snakeCords,sizeof(int)*snakeSize*2);
+    refresh();
+    int size = snakeSize*2;
+    int headY = snakeSize*2-2;
+    int headX = snakeSize*2-1;
+    int snakeHeadY = snakeCords[headY];
+    int snakeHeadX = snakeCords[headX];
+        snakeCords[headY] = snakeHeadY+yT;
+        snakeCords[headX] = snakeHeadX+xT;
+    int nextX = snakeHeadX;
+    int nextY = snakeHeadY;
+    for(int i=size-3;i>0;i-=2){
+        int tempY=snakeCords[i];
+        int tempX=snakeCords[i+1];
+        snakeCords[i]=nextY;
+        snakeCords[i+1]=nextX;
+        nextX=tempX;
+        nextY=tempY;
+    }
+    appendCords(rows,cols,array,oldCords,snakeCords);
 }
 int main(void) {
         srand(time(NULL));
     int rows=0;
     int columns=0;
        initscr();
-       curs_set(0);
+       //curs_set(0);
        printw("how many rows");
-              refresh();
        int y,x;
        getyx(stdscr,y,x);
        move(y+1,0);
        refresh();
        scanw("%d",&rows);
        printw("how many cols");
-              refresh();
        getyx(stdscr,y,x);
        move(y+1,0);
        refresh();
@@ -142,16 +172,16 @@ int main(void) {
             switch (direction)
             {
             case UP:
-            
+            moveSnake(rows,columns,GameState,snakeCords,0,-1);
                 break;
             case DOWN:
-            
+            moveSnake(rows,columns,GameState,snakeCords,0,1);
                 break;
             case LEFT:
-            
+            moveSnake(rows,columns,GameState,snakeCords,-1,0);
                 break;
             case RIGHT:
-            
+            moveSnake(rows,columns,GameState,snakeCords,1,0);
                 break;
 
             default:
