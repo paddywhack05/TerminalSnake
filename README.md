@@ -7,5 +7,4 @@ make\
 or use cmake
 
 # Regular Instructions
-The vs code terminal does not update cursor position until you input something\
-making it look shit dont use any terminal built in to vs code
+The Vs code terminal can look iffy depending on Os
