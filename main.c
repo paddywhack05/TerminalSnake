@@ -85,20 +85,13 @@ int spawnApple(int rows, int cols ,int **array){
      return 0;
 }
 void spawnSnake(int rows, int cols ,int **array,int *snakeCords){
-    //array[cols/2][rows/4]=1;
-    //snakeCords[0]=cols/2;
-    //snakeCords[1]=rows/4;
     array[cols/2][rows/4]=1;
     snakeCords[0]=cols/2;
     snakeCords[1]=rows/4;
     snakeSize++;
-    array[cols/2][(rows/4)+1]=1;
-    snakeCords[2]=cols/2;
-    snakeCords[3]=(rows/4)+1;
-    snakeSize++;
 }
-void appendCords(int rows,int cols,int **array,int *oldSnakeCords,int *newSnakeCords){
-    int size = snakeSize*2;
+void appendCords(int rows,int cols,int **array,int *oldSnakeCords,int *newSnakeCords,int sizeReduce){
+    int size = (snakeSize-sizeReduce)*2;
     for(int i=0;i<size;i+=2){
         array[oldSnakeCords[i]][oldSnakeCords[i+1]] = 0;
     }
@@ -107,11 +100,19 @@ void appendCords(int rows,int cols,int **array,int *oldSnakeCords,int *newSnakeC
     }
     free(oldSnakeCords);
 }
+void eatApple(int rows, int cols,int **array,int *snakeCords,int *oldCords,int nextX,int nextY){
+    int xIndex = (snakeSize*2)+1;
+    int yIndex = (snakeSize*2);
+    snakeCords[yIndex] = nextY;
+    snakeCords[xIndex] = nextX;
+    snakeSize++;
+    array[snakeCords[yIndex]][snakeCords[xIndex]] = 1;
+    appendCords(rows,cols,array,oldCords,snakeCords,1);
+    spawnApple(rows,cols,array);
+}
 void moveSnake(int rows, int cols ,int **array,int *snakeCords,int xT,int yT){
-    printw("Moving snake");
     int *oldCords = malloc(sizeof(int)*rows*cols*2);
     memcpy(oldCords,snakeCords,sizeof(int)*snakeSize*2);
-    refresh();
     int size = snakeSize*2;
     int headY = snakeSize*2-2;
     int headX = snakeSize*2-1;
@@ -119,6 +120,11 @@ void moveSnake(int rows, int cols ,int **array,int *snakeCords,int xT,int yT){
     int snakeHeadX = snakeCords[headX];
     int nextX = snakeHeadX+xT;
     int nextY = snakeHeadY+yT;
+    if(array[nextY][nextX]==2){
+        eatApple(rows,cols,array,snakeCords,oldCords,nextX,nextY);
+        return;
+        //goto append;
+    }
     for(int i=size-2;i>=0;i-=2){
         int tempY=snakeCords[i];
         int tempX=snakeCords[i+1];
@@ -127,7 +133,8 @@ void moveSnake(int rows, int cols ,int **array,int *snakeCords,int xT,int yT){
         nextX=tempX;
         nextY=tempY;
     }
-    appendCords(rows,cols,array,oldCords,snakeCords);
+    //append:
+    appendCords(rows,cols,array,oldCords,snakeCords,0);
 }
 int main(void) {
         srand(time(NULL));
@@ -224,6 +231,7 @@ int main(void) {
         }
     }
         nodelay(stdscr,0);
+        erase();
         printw("\nPress any key to exit \n");
         refresh();
         getch();
