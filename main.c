@@ -110,7 +110,7 @@ void eatApple(int rows, int cols,int **array,int *snakeCords,int *oldCords,int n
     appendCords(rows,cols,array,oldCords,snakeCords,1);
     spawnApple(rows,cols,array);
 }
-void moveSnake(int rows, int cols ,int **array,int *snakeCords,int xT,int yT){
+int moveSnake(int rows, int cols ,int **array,int *snakeCords,int xT,int yT){
     int *oldCords = malloc(sizeof(int)*rows*cols*2);
     memcpy(oldCords,snakeCords,sizeof(int)*snakeSize*2);
     int size = snakeSize*2;
@@ -120,10 +120,21 @@ void moveSnake(int rows, int cols ,int **array,int *snakeCords,int xT,int yT){
     int snakeHeadX = snakeCords[headX];
     int nextX = snakeHeadX+xT;
     int nextY = snakeHeadY+yT;
+    if(nextX<0||nextY<0){
+        return -1;
+    }
+    if(nextX>rows-1||nextY>cols-1){
+        return -1;
+    }
+    if(snakeCords[0]==nextY&&snakeCords[1]==nextX){
+        printw("tail hit");
+        refresh();
+    }else if(array[nextY][nextX]==1){
+        return -1;
+    }
     if(array[nextY][nextX]==2){
         eatApple(rows,cols,array,snakeCords,oldCords,nextX,nextY);
-        return;
-        //goto append;
+        return 1;
     }
     for(int i=size-2;i>=0;i-=2){
         int tempY=snakeCords[i];
@@ -133,7 +144,6 @@ void moveSnake(int rows, int cols ,int **array,int *snakeCords,int xT,int yT){
         nextX=tempX;
         nextY=tempY;
     }
-    //append:
     appendCords(rows,cols,array,oldCords,snakeCords,0);
 }
 int main(void) {
@@ -181,22 +191,26 @@ int main(void) {
         if((int)currentT- (int)t == 1){
             t=currentT;
             currentT = time(NULL);
+            int code;
             switch (direction)
             {
             case UP:
-            moveSnake(rows,columns,GameState,snakeCords,0,-1);
+            code = moveSnake(rows,columns,GameState,snakeCords,0,-1);
                 break;
             case DOWN:
-            moveSnake(rows,columns,GameState,snakeCords,0,1);
+            code = moveSnake(rows,columns,GameState,snakeCords,0,1);
                 break;
             case LEFT:
-            moveSnake(rows,columns,GameState,snakeCords,-1,0);
+            code = moveSnake(rows,columns,GameState,snakeCords,-1,0);
                 break;
             case RIGHT:
-            moveSnake(rows,columns,GameState,snakeCords,1,0);
+            code = moveSnake(rows,columns,GameState,snakeCords,1,0);
                 break;
 
             default:
+                break;
+            }
+            if(code==-1){
                 break;
             }
             printGameState(rows,columns,GameState);
