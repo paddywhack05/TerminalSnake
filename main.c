@@ -31,7 +31,7 @@ for (i = 0; i < cols; i++) {
 }
 return;
 }
-void printGameState(int rows, int cols ,int **array){
+void printGameState(int rows, int cols ,int **array,int *snakeCords){
     erase();
     int i , j;
 for (i = 0; i < cols; i++) {
@@ -40,7 +40,11 @@ for (i = 0; i < cols; i++) {
         printw(".");
     } 
    if (array[i][j]==1){
+        if(i==snakeCords[snakeSize*2-2]&&j==snakeCords[snakeSize*2-1]){
+            printw("@");
+        }else{
         printw("#");
+        }
     }
     if (array[i][j]==2){
         printw("2");
@@ -213,7 +217,7 @@ int main(void) {
             if(code==-1){
                 break;
             }
-            printGameState(rows,columns,GameState);
+            printGameState(rows,columns,GameState,snakeCords);
             printw("%d\n",num);
             num++;
             refresh();
