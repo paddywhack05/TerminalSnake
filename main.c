@@ -7,8 +7,14 @@
 #include <windows.h>
 #else
 #include <ncurses.h>
-#include <sys/time.h>
 #endif
+long uniTime(){
+    struct timespec t;
+    clock_gettime(CLOCK_MONOTONIC,&t);
+    long millisec = t.tv_sec*1000;
+    long milli = t.tv_nsec/1e+6;
+    return millisec + milli;
+}
 enum controls{
 UP=1,
 DOWN,
@@ -185,14 +191,14 @@ int main(void) {
         return 1;
     }
     resetGameState(rows,columns,GameState);
-    time_t t = time(NULL);
-    time_t currentT = time(NULL);
+    long t = uniTime();
+    long currentT = uniTime();
     int num=1;
     spawnSnake(rows,columns,GameState,snakeCords);
     spawnApple(rows,columns,GameState);
     while(1==1){
-        currentT = time(NULL);
-        if((int)currentT- (int)t == 1){
+        currentT = uniTime();
+        if(currentT - t >= 500){
             t=currentT;
             currentT = time(NULL);
             int code;
