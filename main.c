@@ -156,12 +156,19 @@ int moveSnake(int rows, int cols ,int **array,int *snakeCords,int xT,int yT){
     }
     appendCords(rows,cols,array,oldCords,snakeCords,0);
 }
+int addInput(int bufferIndex,int *inputBuffer,int direct){
+    if(bufferIndex>3||inputBuffer[bufferIndex]==direct){
+        return 0;
+    }else{
+        inputBuffer[bufferIndex]=direct;
+        return 1;
+    }
+}
 int main(void) {
         srand(time(NULL));
     int rows=0;
     int columns=0;
        initscr();
-       //curs_set(0);
        printw("how many rows");
        int y,x;
        getyx(stdscr,y,x);
@@ -196,12 +203,24 @@ int main(void) {
     int num=1;
     spawnSnake(rows,columns,GameState,snakeCords);
     spawnApple(rows,columns,GameState);
+    int bufferIndex=0;
+    int inputBuffer[4];
     while(1==1){
         currentT = uniTime();
         if(currentT - t >= 500){
             t=currentT;
             currentT = time(NULL);
             int code;
+            if(bufferIndex==0){
+                
+            }else{
+                direction = inputBuffer[0];
+                for(int i = 0;i<bufferIndex-1;i++){
+                    inputBuffer[i]=inputBuffer[i+1];
+                    printf("i %d buf %d",i,inputBuffer[i]);
+                }
+                bufferIndex--;
+            }
             switch (direction)
             {
             case UP:
@@ -236,20 +255,24 @@ int main(void) {
             break;
         }
         if(input == 'w'||input == KEY_UP){
-            direction=UP;
-            printw("w");
+            bufferIndex += addInput(bufferIndex,inputBuffer,UP);
+            //direction=UP;
+            printw("w,%d",bufferIndex);
         }
         if(input == 's'||input == KEY_DOWN){
-            direction=DOWN;
-            printw("s");
+            bufferIndex +=addInput(bufferIndex,inputBuffer,DOWN);
+            //direction=DOWN;
+            printw("s,%d",bufferIndex);
         }
         if(input == 'a'||input == KEY_LEFT){
-            direction=LEFT;
-            printw("a");
+            bufferIndex +=addInput(bufferIndex,inputBuffer,LEFT);
+            //direction=LEFT;
+            printw("a,%d",bufferIndex);
         }
         if(input == 'd'||input == KEY_RIGHT){
-            direction=RIGHT;
-            printw("d");
+            bufferIndex +=addInput(bufferIndex,inputBuffer,RIGHT);
+            //direction=RIGHT;
+            printw("d,%d",bufferIndex);
         }
                 refresh();
         }
