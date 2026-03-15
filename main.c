@@ -264,7 +264,7 @@ int main(void) {
             nodelay(stdscr,0);
             WINDOW *pPauseWin = newwin(columns/3,rows/3,columns/3,rows/3);
             getmaxyx(pPauseWin,y,x);
-            mvwprintw(pPauseWin,y/2,x/2,"||");
+            mvwprintw(pPauseWin,y/2,x/2-1,"||");
             wrefresh(pPauseWin);
             getch();
             delwin(pPauseWin);
