@@ -156,7 +156,12 @@ int moveSnake(int rows, int cols ,int **array,int *snakeCords,int xT,int yT){
     }
     appendCords(rows,cols,array,oldCords,snakeCords,0);
 }
-int addInput(int bufferIndex,int *inputBuffer,int direct){
+int addInput(int bufferIndex,int *inputBuffer,int direct,int oppositeDirect){
+    if(snakeSize>1&&bufferIndex > 0){
+        if(inputBuffer[bufferIndex-1]==oppositeDirect){
+            return 0;
+        }
+    }
     if((bufferIndex > 3 || (bufferIndex > 0 && inputBuffer[bufferIndex - 1] == direct))){
         return 0;
     }else{
@@ -218,7 +223,6 @@ int main(void) {
                 direction = inputBuffer[0];
                 for(int i = 0;i<bufferIndex-1;i++){
                     inputBuffer[i]=inputBuffer[i+1];
-                    printf("i %d buf %d",i,inputBuffer[i]);
                 }
                 bufferIndex--;
             }
@@ -265,23 +269,35 @@ int main(void) {
             nodelay(stdscr,1);
         }
         if(input == 'w'||input == KEY_UP){
-            bufferIndex += addInput(bufferIndex,inputBuffer,UP);
-            //direction=UP;
+            if(snakeSize>1&&bufferIndex == 0&&direction==DOWN){
+            //bufferIndex += addInput(bufferIndex,inputBuffer,UP,DOWN);
+            }else{
+                bufferIndex += addInput(bufferIndex,inputBuffer,UP,DOWN);
+            }
             printw("w,%d",bufferIndex);
         }
         if(input == 's'||input == KEY_DOWN){
-            bufferIndex +=addInput(bufferIndex,inputBuffer,DOWN);
-            //direction=DOWN;
+            if(snakeSize>1&&bufferIndex == 0&&direction==UP){
+           // bufferIndex +=addInput(bufferIndex,inputBuffer,DOWN,UP);
+            }else{
+                bufferIndex += addInput(bufferIndex,inputBuffer,DOWN,UP);
+            }
             printw("s,%d",bufferIndex);
         }
         if(input == 'a'||input == KEY_LEFT){
-            bufferIndex +=addInput(bufferIndex,inputBuffer,LEFT);
-            //direction=LEFT;
+            if(snakeSize>1&&bufferIndex == 0&&direction==RIGHT){
+            //bufferIndex +=addInput(bufferIndex,inputBuffer,LEFT,RIGHT);
+            }else{
+            bufferIndex += addInput(bufferIndex,inputBuffer,LEFT,RIGHT);
+            }
             printw("a,%d",bufferIndex);
         }
         if(input == 'd'||input == KEY_RIGHT){
-            bufferIndex +=addInput(bufferIndex,inputBuffer,RIGHT);
-            //direction=RIGHT;
+            if(snakeSize>1&&bufferIndex == 0&&direction==LEFT){
+            //bufferIndex +=addInput(bufferIndex,inputBuffer,RIGHT,LEFT);
+            }else{
+                bufferIndex += addInput(bufferIndex,inputBuffer,RIGHT,LEFT);
+            }
             printw("d,%d",bufferIndex);
         }
                 refresh();
