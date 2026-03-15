@@ -260,9 +260,11 @@ int main(void) {
             break;
         }
         if(input == 'p'){
+            int y,x;
             nodelay(stdscr,0);
-            WINDOW *pPauseWin = newwin(columns/2,rows/2,columns/4,rows/4);
-            wprintw(pPauseWin,"Paused");
+            WINDOW *pPauseWin = newwin(columns/3,rows/3,columns/3,rows/3);
+            getmaxyx(pPauseWin,y,x);
+            mvwprintw(pPauseWin,y/2,x/2,"||");
             wrefresh(pPauseWin);
             getch();
             delwin(pPauseWin);
@@ -270,7 +272,7 @@ int main(void) {
         }
         if(input == 'w'||input == KEY_UP){
             if(snakeSize>1&&bufferIndex == 0&&direction==DOWN){
-            //bufferIndex += addInput(bufferIndex,inputBuffer,UP,DOWN);
+
             }else{
                 bufferIndex += addInput(bufferIndex,inputBuffer,UP,DOWN);
             }
@@ -278,7 +280,7 @@ int main(void) {
         }
         if(input == 's'||input == KEY_DOWN){
             if(snakeSize>1&&bufferIndex == 0&&direction==UP){
-           // bufferIndex +=addInput(bufferIndex,inputBuffer,DOWN,UP);
+
             }else{
                 bufferIndex += addInput(bufferIndex,inputBuffer,DOWN,UP);
             }
@@ -286,7 +288,7 @@ int main(void) {
         }
         if(input == 'a'||input == KEY_LEFT){
             if(snakeSize>1&&bufferIndex == 0&&direction==RIGHT){
-            //bufferIndex +=addInput(bufferIndex,inputBuffer,LEFT,RIGHT);
+
             }else{
             bufferIndex += addInput(bufferIndex,inputBuffer,LEFT,RIGHT);
             }
@@ -294,7 +296,7 @@ int main(void) {
         }
         if(input == 'd'||input == KEY_RIGHT){
             if(snakeSize>1&&bufferIndex == 0&&direction==LEFT){
-            //bufferIndex +=addInput(bufferIndex,inputBuffer,RIGHT,LEFT);
+
             }else{
                 bufferIndex += addInput(bufferIndex,inputBuffer,RIGHT,LEFT);
             }
@@ -311,5 +313,6 @@ int main(void) {
         endwin();
         freeGameState(rows,columns,GameState);
         free(snakeCords);
+        free(GameState);
     return 0;
 }
