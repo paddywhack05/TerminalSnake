@@ -157,7 +157,7 @@ int moveSnake(int rows, int cols ,int **array,int *snakeCords,int xT,int yT){
     appendCords(rows,cols,array,oldCords,snakeCords,0);
 }
 int addInput(int bufferIndex,int *inputBuffer,int direct){
-    if(bufferIndex>3||inputBuffer[bufferIndex]==direct){
+    if((bufferIndex > 3 || (bufferIndex > 0 && inputBuffer[bufferIndex - 1] == direct))){
         return 0;
     }else{
         inputBuffer[bufferIndex]=direct;
@@ -201,13 +201,14 @@ int main(void) {
     long t = uniTime();
     long currentT = uniTime();
     int num=1;
+    int tickRate=300;
     spawnSnake(rows,columns,GameState,snakeCords);
     spawnApple(rows,columns,GameState);
     int bufferIndex=0;
-    int inputBuffer[4];
+    int inputBuffer[4]={0};
     while(1==1){
         currentT = uniTime();
-        if(currentT - t >= 500){
+        if(currentT - t >= tickRate){
             t=currentT;
             currentT = time(NULL);
             int code;
@@ -253,6 +254,15 @@ int main(void) {
             //printw("\n Input = %c",input);
         if(input == 'q'||input ==  27){
             break;
+        }
+        if(input == 'p'){
+            nodelay(stdscr,0);
+            WINDOW *pPauseWin = newwin(columns/2,rows/2,columns/4,rows/4);
+            wprintw(pPauseWin,"Paused");
+            wrefresh(pPauseWin);
+            getch();
+            delwin(pPauseWin);
+            nodelay(stdscr,1);
         }
         if(input == 'w'||input == KEY_UP){
             bufferIndex += addInput(bufferIndex,inputBuffer,UP);
