@@ -37,9 +37,30 @@ for (i = 0; i < cols; i++) {
 }
 return;
 }
+char getHeadChar(){
+    switch (direction)
+    {
+    case UP:
+        return '^';
+        break;
+    case DOWN:
+        return 'v';
+        break;
+    case LEFT:
+        return '<';
+        break;
+    case RIGHT:
+        return '>';
+        break;                    
+    default:
+        return '@';
+        break;
+    }
+}
 void printGameState(int rows, int cols ,int **array,int *snakeCords){
     erase();
     int i , j;
+    char snakeHead=getHeadChar();//<>v^
 for (i = 0; i < cols; i++) {
   for (j = 0; j < rows; j++) {
     if (array[i][j]==0){
@@ -47,7 +68,7 @@ for (i = 0; i < cols; i++) {
     } 
    if (array[i][j]==1){
         if(i==snakeCords[snakeSize*2-2]&&j==snakeCords[snakeSize*2-1]){
-            printw("@");
+            printw("%c",snakeHead);
         }else{
         printw("#");
         }
