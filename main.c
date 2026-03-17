@@ -283,9 +283,10 @@ int main(void) {
         if(input == 'p'){
             int y,x;
             nodelay(stdscr,0);
-            WINDOW *pPauseWin = newwin(columns/3,rows/3,columns/3,rows/3);
+            WINDOW *pPauseWin = newwin(columns/2,rows/2,columns/3,rows/3);
             getmaxyx(pPauseWin,y,x);
             mvwprintw(pPauseWin,y/2,x/2-1,"||");
+            box(pPauseWin,0,0);
             wrefresh(pPauseWin);
             getch();
             delwin(pPauseWin);
