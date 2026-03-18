@@ -57,30 +57,32 @@ char getHeadChar(){
         break;
     }
 }
-void printGameState(int rows, int cols ,int **array,int *snakeCords){
-    erase();
+void printGameState(WINDOW *pSnakeWin,int rows, int cols ,int **array,int *snakeCords){
+    werase(pSnakeWin);
     int i , j;
     char snakeHead=getHeadChar();//<>v^
 for (i = 0; i < cols; i++) {
   for (j = 0; j < rows; j++) {
+    wmove(pSnakeWin,i+1,j+1);
     if (array[i][j]==0){
-        printw(".");
+        wprintw(pSnakeWin,".");
     } 
    if (array[i][j]==1){
         if(i==snakeCords[snakeSize*2-2]&&j==snakeCords[snakeSize*2-1]){
-            printw("%c",snakeHead);
+            wprintw(pSnakeWin,"%c",snakeHead);
         }else{
-        printw("#");
+        wprintw(pSnakeWin,"#");
         }
     }
     if (array[i][j]==2){
-        printw("2");
+        wprintw(pSnakeWin,"2");
     }
     if(j==rows-1){
-        printw("\n");
+        wprintw(pSnakeWin,"\n");
     }
   }
 }
+box(pSnakeWin,0,0);
 }
 int findNumEmpty(int rows, int cols ,int **array){
 int a,b;
@@ -158,8 +160,8 @@ int moveSnake(int rows, int cols ,int **array,int *snakeCords,int xT,int yT){
         return -1;
     }
     if(snakeCords[0]==nextY&&snakeCords[1]==nextX){
-        printw("tail hit");
-        refresh();
+        //printw("tail hit");
+        //refresh();
     }else if(array[nextY][nextX]==1){
         return -1;
     }
@@ -216,6 +218,9 @@ int main(void) {
         rows=15;
         columns=10;
     }
+    erase();
+    refresh();
+        WINDOW *pSnakeWin = newwin(columns+2,rows+2,0,0);
     int *snakeCords = malloc(sizeof(int)*rows*columns*2);
     int **GameState = malloc(sizeof(int *)*columns);
     if(GameState == NULL){
@@ -268,15 +273,17 @@ int main(void) {
             if(code==-1){
                 break;
             }
-            printGameState(rows,columns,GameState,snakeCords);
+            printGameState(pSnakeWin,rows,columns,GameState,snakeCords);
+            move(columns+2,0);
             printw("%d\n",num);
             num++;
-            refresh();
+            wrefresh(pSnakeWin);
         }
         int input;
         input = getch();
         if(input){
             //printw("\n Input = %c",input);
+            move(columns+3,0);
         if(input == 'q'||input ==  27){
             break;
         }
