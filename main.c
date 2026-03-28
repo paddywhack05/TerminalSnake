@@ -281,8 +281,7 @@ int main(void) {
         }
         int input;
         input = getch();
-        if(input){
-            //printw("\n Input = %c",input);
+        if(input!=ERR){
             move(columns+3,0);
         if(input == 'q'||input ==  27){
             break;
