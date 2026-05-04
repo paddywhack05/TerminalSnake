@@ -241,7 +241,6 @@ int main(void) {
         currentT = uniTime();
         if(currentT - t >= tickRate){
             t=currentT;
-            currentT = time(NULL);
             int code;
             if(bufferIndex==0){
                 
