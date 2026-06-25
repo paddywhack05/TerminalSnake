@@ -63,19 +63,19 @@ void printGameState(WINDOW *pSnakeWin,int rows, int cols ,int **array,int *snake
     char snakeHead=getHeadChar();//<>v^
 for (i = 0; i < cols; i++) {
   for (j = 0; j < rows; j++) {
-    wmove(pSnakeWin,i+1,j+1);
+    wmove(pSnakeWin,i+1,(j*2)+1);
     if (array[i][j]==0){
-        wprintw(pSnakeWin,".");
+        wprintw(pSnakeWin,"..");
     } 
    if (array[i][j]==1){
         if(i==snakeCords[snakeSize*2-2]&&j==snakeCords[snakeSize*2-1]){
-            wprintw(pSnakeWin,"%c",snakeHead);
+            wprintw(pSnakeWin,"%c%c",snakeHead,snakeHead);
         }else{
-        wprintw(pSnakeWin,"#");
+        wprintw(pSnakeWin,"##");
         }
     }
     if (array[i][j]==2){
-        wprintw(pSnakeWin,"2");
+        wprintw(pSnakeWin,"22");
     }
     if(j==rows-1){
         wprintw(pSnakeWin,"\n");
@@ -220,7 +220,7 @@ int main(void) {
     }
     erase();
     refresh();
-        WINDOW *pSnakeWin = newwin(columns+2,rows+2,0,0);
+        WINDOW *pSnakeWin = newwin(columns+2,(rows*2)+2,0,0);
     int *snakeCords = malloc(sizeof(int)*rows*columns*2);
     int **GameState = malloc(sizeof(int *)*columns);
     if(GameState == NULL){
